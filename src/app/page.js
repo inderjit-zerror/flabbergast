@@ -667,7 +667,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="w-full h-fit relative ">
+      <div className="w-full h-fit relative max-lg:hidden ">
         <div className="w-full LMBOX MC h-screen bg-[#151515] fixed top-0 left-0">
           <Nav />
 
@@ -1328,6 +1328,10 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="w-full h-screen bg-[#202020] flex justify-center text-white items-center lg:hidden px-[5vw]">
+        Please open the link on a PC/Laptop
       </div>
     </>
   );
