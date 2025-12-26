@@ -1058,7 +1058,7 @@ export default function Home() {
 
 
         {/* SMBOX */}
-        <div className="w-full opacity-0 max-w-[1300] SMBOX  h-fit gap-[20px] scale-[0.6] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2   flex justify-center flex-wrap">
+        <div className="w-full opacity-0 max-w-[1300] SMBOX pointer-events-none  h-fit gap-[20px] scale-[0.6] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2   flex justify-center flex-wrap">
           {/* CARD 1 */}
           <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd p-3 bg-[#E62200] rounded-xl select-none relative overflow-hidden">
             <div className="w-full h-[33%] flex gap-1">
