@@ -620,7 +620,7 @@ export default function Home() {
         start: "bottom top",
         end: "bottom top",
         scrub: true,
-        markers: true,
+        // markers: true,
       },
     });
     // Show SMBOX
