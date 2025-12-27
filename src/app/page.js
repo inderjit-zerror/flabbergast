@@ -4,6 +4,7 @@ import gsap from "gsap";
 import Image from "next/image";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
+import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -610,7 +611,6 @@ export default function Home() {
       },
       "c10"
     );
-   
   }, []);
 
   useEffect(() => {
@@ -624,31 +624,31 @@ export default function Home() {
       },
     });
     // Show SMBOX
-  tlLast.to(".SMBOX", { opacity: 1 }, "l1");
+    tlLast.to(".SMBOX", { opacity: 1, pointerEvents: "auto" }, "l1");
 
-  // Hide main cards
-  tlLast.to(".crd", { opacity: 0, }, "l1");
+    // Hide main cards
+    tlLast.to(".crd", { opacity: 0 }, "l1");
 
-  // SXCrd (small cards) grow out staggered
-  tlLast.fromTo(
-    ".SXCrd",
-    {
-      opacity: 0,
-      scale: 0.6,
-      xPercent: -50,
-      yPercent: -50,
-    },
-    {
-      opacity: 1,
-      scale: 1,
-      xPercent: 0,
-      yPercent: 0,
-      stagger: 0.15,
-      ease: "power3.out",
-      duration: 1,
-    },
-    "l1"
-  );
+    // SXCrd (small cards) grow out staggered
+    tlLast.fromTo(
+      ".SXCrd",
+      {
+        opacity: 0,
+        scale: 3,
+        xPercent: -0,
+        yPercent: -100,
+      },
+      {
+        opacity: 1,
+        scale: 1,
+        xPercent: 0,
+        yPercent: 0,
+        stagger: 0.7,
+        ease: "linear",
+        duration: 3,
+      },
+      "l1"
+    );
   }, []);
 
   const aHash = [
@@ -665,14 +665,50 @@ export default function Home() {
     "div11",
   ];
 
+  useEffect(() => {
+    // 🔹 ONLY divs jinke andar text hai
+    const textDivs = Array.from(
+      document.querySelectorAll(".glitch-item")
+    ).filter((el) => el.innerText.trim().length > 0);
+
+    const glitchRandomTwo = () => {
+      if (textDivs.length < 2) return;
+
+      // 🔹 Random 2 select
+      const selected = gsap.utils.shuffle([...textDivs]).slice(0, 2);
+
+      gsap.fromTo(
+        selected,
+        { opacity: 1 },
+        {
+          opacity: 0,
+          duration: 0.12,
+          repeat: 3, // 1→0→1→0→1
+          yoyo: true,
+          ease: "power1.inOut",
+          onComplete: () => {
+            // next glitch after random delay
+            gsap.delayedCall(gsap.utils.random(1.5, 3), glitchRandomTwo);
+          },
+        }
+      );
+    };
+
+    // initial delay
+    gsap.delayedCall(0.02, glitchRandomTwo);
+  }, []);
+
+
+
   return (
     <>
       <div className="w-full h-fit relative max-lg:hidden ">
+        {/* PCBOX */}
         <div className="w-full LMBOX MC h-screen bg-[#151515] fixed top-0 left-0">
           <Nav />
 
           {/* Card-Info */}
-          <div className="w-10 h-fit  transition-all  ease-in cursor-pointer duration-100  flex flex-col items-center absolute top-1/2 right-[10%] -translate-y-1/2 ">
+          <div className="w-10 h-fit  transition-all  ease-in-out cursor-pointer duration-100  flex flex-col items-center absolute top-1/2 right-[8%] -translate-y-1/2 z-100 ">
             {[
               "i1",
               "i2",
@@ -690,7 +726,7 @@ export default function Home() {
                 <a key={i} href={`#${aHash[i]}`}>
                   <div
                     key={i}
-                    className={`w-5 h-2.5  border-b border-[#666666] hover:w-7 hover:border-[#f5f5f5] hover:my-1  ${item} transition-all ease-in cursor-pointer duration-100 ${
+                    className={`w-5 h-2.5  border-b border-[#666666] hover:w-7 hover:border-[#d9d9d9]  ${item} transition-all ease-in-out cursor-pointer duration-100 ${
                       i === 0 && "w-10 border-white"
                     } `}
                   ></div>
@@ -700,7 +736,7 @@ export default function Home() {
           </div>
 
           {/* Card-1 */}
-          <div className="w-[60%] crd card1 h-[68vh] p-3 bg-[#E62200] absolute top-[16%] left-1/2 -translate-x-1/2 rounded-xl select-none">
+          <div className="w-[69%] crd card1 h-[76vh] p-3 bg-[#E62200] absolute top-[12%] left-1/2 -translate-x-1/2 rounded-xl select-none">
             <div className="w-full h-1/3 flex">
               {[
                 "Pich dech 2025--",
@@ -725,7 +761,7 @@ export default function Home() {
                       handelMouseLeave(`.hoverBgAnimateT${i}`)
                     }
                     key={i}
-                    className={` w-1/12 hoverBgAnimateT${i}  border bg-[#fa331000] border-[#FA3310] flex ${
+                    className={` w-1/12 glitch-item  hoverBgAnimateT${i}  border bg-[#fa331000] border-[#FA3310] flex ${
                       i == 0 && "items-end"
                     } text-[#f5f5f5b6] rounded-xl text-[11px] p-2 `}
                   >
@@ -746,7 +782,7 @@ export default function Home() {
                         handelMouseLeave(`.hoverBgAnimateM${i}`)
                       }
                       key={i}
-                      className={` w-1/12 hoverBgAnimateM${i} border bg-[#fa331000] border-[#FA3310] flex rounded-xl text-[11px] p-2 text-[#f5f5f5b6] `}
+                      className={` w-1/12 glitch-item  hoverBgAnimateM${i} border bg-[#fa331000] border-[#FA3310] flex rounded-xl text-[11px] p-2 text-[#f5f5f5b6] `}
                     >
                       {item}
                     </div>
@@ -778,7 +814,7 @@ export default function Home() {
                       handelMouseLeave(`.hoverBgAnimateB${i}`)
                     }
                     key={i}
-                    className={` w-1/12 hoverBgAnimateB${i} border bg-[#fa331000] border-[#FA3310] flex rounded-xl  ${
+                    className={` w-1/12 glitch-item  hoverBgAnimateB${i} border bg-[#fa331000] border-[#FA3310] flex rounded-xl  ${
                       i == 3 && "items-end"
                     }  ${i == 9 && "items-end"}  ${
                       i == 11 && "items-end"
@@ -790,14 +826,14 @@ export default function Home() {
               })}
             </div>
             <div className="w-full h-full absolute top-0 left-0 gap-5 pointer-events-none flex justify-center items-center">
-              <h1 className="text-white font3 text-[3.3vw]">FLABBERGAST</h1>
+              <h1 className="text-white font3 text-[3.3vw]">ZERROR STUDIO</h1>
               <div className="h-[2.2vw] w-4.5 rounded-sm bg-white"></div>
             </div>
           </div>
 
           {/* Card-2 */}
-          <div className="w-[60%] crd card2 h-[68vh] px-10 py-10 bg-white absolute top-[99%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
-            <p className="font3 text-[2.5rem]">Hi, we are Flabbergast</p>
+          <div className="w-[69%] crd card2 h-[76%] px-10 py-10 bg-white absolute top-[99%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+            <p className="font3 text-[2.5rem]">Hi, we are Zerror Studio</p>
             <div className="w-full h-fit flex justify-between ">
               <p className=" uppercase font1 text-[14px]">
                 Here How we Got FROM 0 To 30
@@ -813,7 +849,7 @@ export default function Home() {
           </div>
 
           {/* Card-3 */}
-          <div className="w-[60%] crd card3 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+          <div className="w-[69%] crd card3 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
             <p className="font3 text-[2.5rem]">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -839,8 +875,8 @@ export default function Home() {
           </div>
 
           {/* Card-4 */}
-          <div className="w-[60%] crd card4 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
-            <p className="font3 text-[2.5rem]">Hi, we are Flabbergast</p>
+          <div className="w-[69%] crd card4 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+            <p className="font3 text-[2.5rem]">Hi, we are Zerror Studio</p>
             <div className="w-full h-fit flex justify-between ">
               <p className=" uppercase font1 text-[14px]">
                 Here How we Got FROM 0 To 30
@@ -856,7 +892,7 @@ export default function Home() {
           </div>
 
           {/* Card-5 */}
-          <div className="w-[60%] crd card5 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+          <div className="w-[69%] crd card5 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
             <p className="font3 text-[2.5rem]">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -882,7 +918,7 @@ export default function Home() {
           </div>
 
           {/* Card-6 */}
-          <div className="w-[60%] crd card6 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+          <div className="w-[69%] crd card6 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
             <p className="font3 text-[2.5rem]">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -914,8 +950,8 @@ export default function Home() {
           </div>
 
           {/* Card-7 */}
-          <div className="w-[60%] crd card7 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
-            <p className="font3 text-[2.5rem]">Hi, we are Flabbergast</p>
+          <div className="w-[69%] crd card7 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+            <p className="font3 text-[2.5rem]">Hi, we are Zerror Studio</p>
             <div className="w-full h-fit flex justify-between ">
               <p className=" uppercase font1 text-[14px]">
                 Here How we Got FROM 0 To 30
@@ -931,7 +967,7 @@ export default function Home() {
           </div>
 
           {/* Card-8 */}
-          <div className="w-[60%] crd card8 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+          <div className="w-[69%] crd card8 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
             <p className="font3 text-[2.5rem]">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -957,8 +993,8 @@ export default function Home() {
           </div>
 
           {/* Card-9 */}
-          <div className="w-[60%] crd card9 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
-            <p className="font3 text-[2.5rem]">Hi, we are Flabbergast</p>
+          <div className="w-[69%] crd card9 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+            <p className="font3 text-[2.5rem]">Hi, we are Zerror Studio</p>
             <div className="w-full h-fit flex justify-between ">
               <p className=" uppercase font1 text-[14px]">
                 Here How we Got FROM 0 To 30
@@ -974,7 +1010,7 @@ export default function Home() {
           </div>
 
           {/* Card-10 */}
-          <div className="w-[60%] crd card10 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+          <div className="w-[69%] crd card10 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
             <p className="font3 text-[2.5rem]">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -1000,7 +1036,7 @@ export default function Home() {
           </div>
 
           {/* Card-11 */}
-          <div className="w-[60%] crd card11 h-[68vh] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
+          <div className="w-[69%] crd card11 h-[76%] px-10 py-10 bg-white absolute top-[120%] left-1/2 -translate-x-1/2 rounded-xl select-none flex flex-col justify-between">
             <p className="font3 text-[2.5rem]">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -1032,7 +1068,6 @@ export default function Home() {
           </div>
         </div>
 
-
         {/* Blank div */}
         {[
           "div1",
@@ -1056,11 +1091,10 @@ export default function Home() {
           );
         })}
 
-
         {/* SMBOX */}
-        <div className="w-full opacity-0 max-w-[1300] SMBOX pointer-events-none  h-fit gap-[20px] scale-[0.6] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2   flex justify-center flex-wrap">
+        <div className="w-full opacity-0 max-w-[1300] SMBOX pointer-events-none  h-fit gap-5 scale-[0.6] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2   flex justify-center flex-wrap">
           {/* CARD 1 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd p-3 bg-[#E62200] rounded-xl select-none relative overflow-hidden">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd p-3 bg-[#E62200] rounded-xl select-none relative overflow-hidden">
             <div className="w-full h-[33%] flex gap-1">
               {[
                 "Pich dech 2025--",
@@ -1088,14 +1122,13 @@ export default function Home() {
               ))}
             </div>
 
-
             <div className="absolute inset-0  flex justify-center items-center pointer-events-none">
               <h1 className="text-white font3 text-[20px]">FLABBERGAST</h1>
             </div>
           </div>
 
           {/* CARD 2 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[18px] leading-tight">
               Hi, we are Flabbergast
             </p>
@@ -1105,7 +1138,7 @@ export default function Home() {
                 Here How we Got FROM 0 To 30
               </p>
 
-              <p className="font1 text-[10px] leading-tight w-[60%]">
+              <p className="font1 text-[10px] leading-tight w-[69%]">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry. Lorem Ipsum has been the industry's standard dummy
                 text ever since the 1500s.
@@ -1114,7 +1147,7 @@ export default function Home() {
           </div>
 
           {/* CARD 3 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[16px] leading-tight">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -1124,7 +1157,7 @@ export default function Home() {
                 Lorem Ipsum is simply dummy
               </p>
 
-              <div className="font1 text-[10px] w-[60%] flex flex-col gap-1">
+              <div className="font1 text-[10px] w-[69%] flex flex-col gap-1">
                 {Array(4)
                   .fill(0)
                   .map((_, i) => (
@@ -1137,7 +1170,7 @@ export default function Home() {
           </div>
 
           {/* CARD 4 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[18px]">Hi, we are Flabbergast</p>
 
             <div className="flex justify-between gap-3">
@@ -1145,14 +1178,14 @@ export default function Home() {
                 Here How we Got FROM 0 To 30
               </p>
 
-              <p className="font1 text-[10px] leading-tight w-[60%]">
+              <p className="font1 text-[10px] leading-tight w-[69%]">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry...
               </p>
             </div>
           </div>
           {/* CARD 4 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[18px]">Hi, we are Flabbergast</p>
 
             <div className="flex justify-between gap-3">
@@ -1160,7 +1193,7 @@ export default function Home() {
                 Here How we Got FROM 0 To 30
               </p>
 
-              <p className="font1 text-[10px] leading-tight w-[60%]">
+              <p className="font1 text-[10px] leading-tight w-[69%]">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry...
               </p>
@@ -1168,7 +1201,7 @@ export default function Home() {
           </div>
 
           {/* CARD 5 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[16px] leading-tight">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -1178,7 +1211,7 @@ export default function Home() {
                 Lorem Ipsum is simply dummy
               </p>
 
-              <div className="w-[60%] font1 text-[10px] flex flex-col gap-1">
+              <div className="w-[69%] font1 text-[10px] flex flex-col gap-1">
                 {Array(4)
                   .fill(0)
                   .map((_, i) => (
@@ -1191,7 +1224,7 @@ export default function Home() {
           </div>
 
           {/* CARD 6 — WITH IMAGE */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[16px] leading-tight">
               simply dummy text of the printing and typesetting industry.
             </p>
@@ -1220,7 +1253,7 @@ export default function Home() {
           </div>
 
           {/* CARD 7 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[18px] leading-tight">
               Hi, we are Flabbergast
             </p>
@@ -1230,14 +1263,14 @@ export default function Home() {
                 Here How we Got FROM 0 To 30
               </p>
 
-              <p className="font1 text-[10px] w-[60%]">
+              <p className="font1 text-[10px] w-[69%]">
                 Lorem Ipsum is simply dummy text...
               </p>
             </div>
           </div>
 
           {/* CARD 8 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[16px]">
               simply dummy text of the printing industry.
             </p>
@@ -1247,7 +1280,7 @@ export default function Home() {
                 Lorem Ipsum is simply dummy
               </p>
 
-              <div className="w-[60%] font1 text-[10px] flex flex-col gap-1">
+              <div className="w-[69%] font1 text-[10px] flex flex-col gap-1">
                 {Array(4)
                   .fill(0)
                   .map((_, i) => (
@@ -1260,7 +1293,7 @@ export default function Home() {
           </div>
 
           {/* CARD 9 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[18px] leading-tight">
               Hi, we are Flabbergast
             </p>
@@ -1270,14 +1303,14 @@ export default function Home() {
                 Here How we Got FROM 0 To 30
               </p>
 
-              <p className="font1 text-[10px] w-[60%]">
+              <p className="font1 text-[10px] w-[69%]">
                 Lorem Ipsum is simply dummy text...
               </p>
             </div>
           </div>
 
           {/* CARD 10 */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[16px]">
               simply dummy text of the printing industry.
             </p>
@@ -1287,7 +1320,7 @@ export default function Home() {
                 Lorem Ipsum is simply dummy
               </p>
 
-              <div className="w-[60%] font1 text-[10px] flex flex-col gap-1">
+              <div className="w-[69%] font1 text-[10px] flex flex-col gap-1">
                 {Array(4)
                   .fill(0)
                   .map((_, i) => (
@@ -1300,7 +1333,7 @@ export default function Home() {
           </div>
 
           {/* CARD 11 — WITH IMAGE */}
-          <div className="w-[400px] h-[200px] hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
+          <div className="w-100 h-50 hover:bg-[#666666] transition-all ease-in cursor-pointer duration-200 SXCrd bg-white rounded-xl p-4 select-none flex flex-col justify-between">
             <p className="font3 text-[16px]">
               simply dummy text of the printing industry.
             </p>
@@ -1330,6 +1363,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* No Mobile View */}
       <div className="w-full h-screen bg-[#202020] flex justify-center text-white items-center lg:hidden px-[5vw]">
         Please open the link on a PC/Laptop
       </div>
